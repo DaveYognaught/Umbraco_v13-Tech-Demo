@@ -6,7 +6,7 @@
     var metaDescription = Model.Value<string>("metaDescription");
     var metaKeywords = Model.Value<string>("metaKeywords");
 
-    //get the websiteSettings node via document type
+    //get the websiteSettings node via document type, reusing contact details and copyright
     IPublishedContent rootNode = Model.Root().SiblingsOfType("websiteSettings").FirstOrDefault();
 }
 

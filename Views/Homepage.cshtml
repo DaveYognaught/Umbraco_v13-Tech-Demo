@@ -8,6 +8,8 @@
     var firstBlockgrid = Model.Value<IEnumerable<BlockGridItem>>("firstBlockgrid");
     var headliners = Model.Value<IEnumerable<BlockGridItem>>("headliners");
     var secondBlockgrid = Model.Value<IEnumerable<BlockGridItem>>("secondBlockgrid");
+    var headline = "";
+    var richtext = "";
 }
 
 @section phBody 
@@ -39,7 +41,7 @@
 
                         @if (content.HasValue("subheading"))
                         {
-                            <h3 class="fw-normal mb-3">@content.Value("subheading")</h3>
+                            <h3 class="display-2 fw-normal mb-3">@content.Value("subheading")</h3>
                         }
 
                         @if (content.HasValue("linkText") && (content.HasValue("internalLink") || content.HasValue("externalLink")))
@@ -65,24 +67,23 @@
                 </div>
             }
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#Carousel" data-bs-slide="prev">
+        <button class="carousel-control-prev position-absolute z-3" type="button" data-bs-target="#Carousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#Carousel" data-bs-slide="next">
+        <button class="carousel-control-next position-absolute z-3" type="button" data-bs-target="#Carousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </button>
     </div>
 
-    <!-- Add a Blockgrid -->
-
+    <!-- First Blockgrid -->
     @foreach (var row in firstBlockgrid)
     {
         <div class="d-md-flex flex-md-equal w-100 @(row == firstBlockgrid.Last() ? "mb-3" : "")" id="Blockgrid">
             @foreach(var area in row.Areas)
             {
-                //Get Left Or Right and use correct Alias
+                //Uses a 2 column layout; get alias and render appropriately
                 var content = row.Areas.Where(x => x.Alias == @area.Alias).FirstOrDefault();
                 var header = content[0].Content.Value("header");
                 var mainText = content[0].Content.Value("mainText");
@@ -99,7 +100,7 @@
                     </div>
                     @if(imageUrl != "")
                     {
-                         <div class="bg-body-tertiary shadow-sm mx-auto d-flex align-items-center justify-content-center" style="width: 80%; height: 300px; border-radius: 21px">
+                        <div class="bg-body-tertiary shadow-sm mx-auto d-flex align-items-center justify-content-center employee-img">
                             <img src="@imageUrl" alt="RealEmployee">
                         </div>
                     }
@@ -108,10 +109,7 @@
         </div>
     }
 
-    @{
-        var headline = "";
-        var richtext = "";
-    }
+    <!-- Another Blockgrid, this one has non-area content too so need to run twice -->
     @foreach (var row in headliners)
     {
         var rowContent = row.Content;
@@ -149,7 +147,7 @@
                     }
 
                     <div class="col-lg-4">
-                        <img src="@imageUrl" alt="RealEmployee" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <img src="@imageUrl" alt="RealEmployee" class="bd-placeholder-img rounded-circle" width="140" height="140" role="img" aria-label="Placeholder" focusable="false">
                         <h2 class="fw-normal">@header</h2>
                         @mainText
                     </div>
@@ -188,7 +186,7 @@
                         else
                         {
                             <div class="col-md-5 order-md-1">
-                                <img src="@imageUrl" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <img src="@imageUrl" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto d-flex" width="300" height="300" aria-label="Placeholder: 300x300">
                             </div>
                         }
                     }
@@ -197,7 +195,7 @@
                         if (!iterate)
                         {
                             <div class="col-md-5">
-                                <img src="@imageUrl" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <img src="@imageUrl" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto d-flex" width="300" height="300" aria-label="Placeholder: 300x300">
                             </div>
                         }
                         else
