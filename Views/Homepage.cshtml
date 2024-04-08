@@ -4,12 +4,17 @@
 	Layout = "Master.cshtml";
     int count = Model.Value<IEnumerable<BlockListItem>>("headerCarousel").Count();
     var headerSlides = Model.Value<IEnumerable<BlockListItem>>("headerCarousel");
+
+    var firstBlockgrid = Model.Value<IEnumerable<BlockGridItem>>("firstBlockgrid");
+    var headliners = Model.Value<IEnumerable<BlockGridItem>>("headliners");
+    var secondBlockgrid = Model.Value<IEnumerable<BlockGridItem>>("secondBlockgrid");
 }
 
-@section phBody {
-    <!-- Add a carousel with configurable content -->
+@section phBody 
+{
+    <!-- Blocklist Carousel -->
     <div id="Carousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
+        <div class="carousel-indicators z-3">
             @for (int i = 0; i < count; i++)
             {
                 <button type="button" data-bs-target="#Carousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i + 1)"></button>
@@ -71,108 +76,150 @@
     </div>
 
     <!-- Add a Blockgrid -->
-    <div class="d-md-flex flex-md-equal w-100" id="Blockgrid">
-        <div class="text-bg-dark pt-3 pt-md-5 text-center overflow-hidden">
-            <div class="my-3 py-3">
-                <h2 class="display-5">Another headline</h2>
-                <p class="lead">And an even wittier subheading.</p>
-            </div>
-            <div class="bg-body-tertiary shadow-sm mx-auto d-flex align-items-center justify-content-center" style="width: 80%; height: 300px; border-radius: 21px">
-                <img src="https://via.placeholder.com/212x212" alt="...">
-            </div>
-        </div>
-        <div class="bg-body-tertiary pt-3 pt-md-5 text-center overflow-hidden">
-            <div class="my-3 p-3">
-                <h2 class="display-5">Another headline</h2>
-                <p class="lead">And an even wittier subheading.</p>
-            </div>
-            <div class="bg-dark shadow-sm mx-auto d-flex align-items-center justify-content-center" style="width: 80%; height: 300px; border-radius: 21px">
-                <img src="https://via.placeholder.com/212x212" alt="...">
-            </div>
-        </div>
-    </div>
 
-    <div class="d-md-flex flex-md-equal w-100 mb-3">
-        <div class="text-bg-dark pt-3 pt-md-5 text-center overflow-hidden">
-            <div class="bg-body-tertiary shadow-sm mx-auto d-flex align-items-center justify-content-center" style="width: 80%; height: 300px; border-radius: 21px">
-                <img src="https://via.placeholder.com/212x212" alt="...">
-            </div>
-        </div>
-        <div class="bg-body-tertiary pt-3 pt-md-5 text-center overflow-hidden">
-            <div class="my-3 p-3">
-                <h1>Main Headline</h1>
-                <h2>Another headline</h2>
-                <p class="lead">And an even wittier subheading.</p>
-                <p class="lead">Additional text to focus more on the content rather than the image.</p>
-            </div>
-        </div>
-    </div>
+    @foreach (var row in firstBlockgrid)
+    {
+        <div class="d-md-flex flex-md-equal w-100 @(row == firstBlockgrid.Last() ? "mb-3" : "")" id="Blockgrid">
+            @foreach(var area in row.Areas)
+            {
+                //Get Left Or Right and use correct Alias
+                var content = row.Areas.Where(x => x.Alias == @area.Alias).FirstOrDefault();
+                var header = content[0].Content.Value("header");
+                var mainText = content[0].Content.Value("mainText");
+                var imageUrl = "";
+                if (content[0].Content.HasValue("image"))
+                {
+                    imageUrl = content[0].Content.Value<IPublishedContent>("image").Url();
+                }
 
-    <!-- Centred full width header and text -->
+                <div class="text-bg-dark pt-3 pt-md-5 text-center overflow-hidden @(imageUrl == "" ? "d-flex align-items-center justify-content-center" : "")">
+                    <div class="my-3 py-3">
+                        <h2 class="display-5">@header</h2>
+                        @mainText
+                    </div>
+                    @if(imageUrl != "")
+                    {
+                         <div class="bg-body-tertiary shadow-sm mx-auto d-flex align-items-center justify-content-center" style="width: 80%; height: 300px; border-radius: 21px">
+                            <img src="@imageUrl" alt="RealEmployee">
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @{
+        var headline = "";
+        var richtext = "";
+    }
+    @foreach (var row in headliners)
+    {
+        var rowContent = row.Content;
+
+        if (rowContent.HasValue("headline"))
+        {
+            headline = rowContent.Value("headline").ToString();
+        }
+
+        if (rowContent.HasValue("richText"))
+        {
+            richtext = rowContent.Value("richText").ToString();
+        }
+    }
+
     <div class="bg-dark text-light p-5 text-center" id="Headliners">
-        <h1 class="display-4">Main Headline</h1>
-        <p class="lead">But that's not all we do...</p>
+        <h1 class="display-4">@headline</h1>
+        @Html.Raw(richtext)
     </div>
 
-    <!-- Headliners -->
     <div class="container marketing">
         <div class="row">
-            <div class="col-lg-4">
-                <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)" /></svg>
-                <h2 class="fw-normal">Heading</h2>
-                <p>Some representative placeholder content for the three columns of text below the carousel. This is the first column.</p>
-                <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)" /></svg>
-                <h2 class="fw-normal">Heading</h2>
-                <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
-                <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)" /></svg>
-                <h2 class="fw-normal">Heading</h2>
-                <p>And lastly this, the third column of representative placeholder content.</p>
-                <p><a class="btn btn-secondary" href="#">View details &raquo;</a></p>
-            </div>
+            @foreach (var row in headliners)
+            {
+                foreach (var area in row.Areas)
+                {
+                    //Use correct Alias
+                    var content = row.Areas.Where(x => x.Alias == @area.Alias).FirstOrDefault();
+                    var header = content[0].Content.Value("header");
+                    var mainText = content[0].Content.Value("mainText");
+                    var imageUrl = "";
+                    if (content[0].Content.HasValue("image"))
+                    {
+                        imageUrl = content[0].Content.Value<IPublishedContent>("image").Url();
+                    }
+
+                    <div class="col-lg-4">
+                        <img src="@imageUrl" alt="RealEmployee" class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <h2 class="fw-normal">@header</h2>
+                        @mainText
+                    </div>
+                }
+            }
         </div>
+    </div>
 
-        <hr class="featurette-divider">
+    <div class="container">
+        <hr class="featurette-divider" id="Blockgrid2">
 
-        <div class="row featurette" id="Blockgrid2">
-            <div class="col-md-7">
-                <h2 class="featurette-heading fw-normal lh-1">First featurette heading. <span class="text-body-secondary">It’ll blow your mind.</span></h2>
-                <p class="lead">Some great placeholder content for the first featurette here. Imagine some exciting prose here.</p>
+        @{
+            var iterate = false;
+        }
+        @foreach (var row in secondBlockgrid)
+        {
+            <div class="row featurette">
+                @foreach (var area in row.Areas)
+                {
+                    var content = row.Areas.Where(x => x.Alias == @area.Alias).FirstOrDefault();
+                    var mainText = content[0].Content.Value("richtext");
+                    var imageUrl = "";
+                    if (content[0].Content.HasValue("image"))
+                    {
+                        imageUrl = content[0].Content.Value<IPublishedContent>("image").Url();
+                    }
+
+                    if (area.Alias == "left")
+                    {
+                        if(!iterate)
+                        {
+                            <div class="col-md-7">
+                                @mainText
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-5 order-md-1">
+                                <img src="@imageUrl" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        if (!iterate)
+                        {
+                            <div class="col-md-5">
+                                <img src="@imageUrl" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-7 order-md-2">
+                                @mainText
+                            </div>
+                        }
+
+                        if (!iterate)
+                        {
+                            iterate = true;
+                        }
+                        else
+                        {
+                            iterate = false;
+                        }
+                    }
+                }
             </div>
-            <div class="col-md-5">
-                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)" /><text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text></svg>
-            </div>
-        </div>
 
-        <hr class="featurette-divider">
-
-        <div class="row featurette">
-            <div class="col-md-7 order-md-2">
-                <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span class="text-body-secondary">See for yourself.</span></h2>
-                <p class="lead">Another featurette? Of course. More placeholder content here to give you an idea of how this layout would work with some actual real-world content in place.</p>
-            </div>
-            <div class="col-md-5 order-md-1">
-                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)" /><text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text></svg>
-            </div>
-        </div>
-
-        <hr class="featurette-divider">
-
-        <div class="row featurette">
-            <div class="col-md-7">
-                <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span class="text-body-secondary">Checkmate.</span></h2>
-                <p class="lead">And yes, this is the last block of representative placeholder content. Again, not really intended to be actually read, simply here to give you a better view of what this would look like with some actual content. Your content.</p>
-            </div>
-            <div class="col-md-5">
-                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-bg)" /><text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text></svg>
-            </div>
-        </div>
-
-        <hr class="featurette-divider">
+            <hr class="featurette-divider">
+        }
     </div>
 }
