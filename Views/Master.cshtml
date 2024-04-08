@@ -1,0 +1,88 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@{
+    Layout = null;
+    var metaTitle = Model.Value<string>("metaTitle");
+    var metaDescription = Model.Value<string>("metaDescription");
+    var metaKeywords = Model.Value<string>("metaKeywords");
+
+    //get the websiteSettings node via document type
+    IPublishedContent rootNode = Model.Root().SiblingsOfType("websiteSettings").FirstOrDefault();
+}
+
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="@metaDescription">
+    <meta name="keywords" content="@metaKeywords">
+    <meta name="author" content="Lord One">
+    <title>@metaTitle</title>
+
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/dist/css/main.css" rel="stylesheet">
+
+    @RenderSection("phHead", false)
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="BoB" fill="none" stroke="gold" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="11" />
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8 L5 17 L19 17 Z" />
+            <path d="M12 3 L9 8 L15 8 Z" />
+        </symbol>
+        <symbol id="chevron-right" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+        </symbol>
+    </svg>
+
+    <header>
+        <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
+            <div class="container">
+                <a class="navbar-brand d-md-none" href="#">
+                    <svg class="bi" width="24" height="24"><use xlink:href="#BoB"/></svg> Bureau of Business
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasLabel">Bureau of Business</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav d-flex justify-content-center align-items-center flex-grow-1 text-center">
+                            <li class="mx-auto d-md-none">
+                                <a class="nav-link" href="#">
+                                    <svg class="bi" width="24" height="24"><use xlink:href="#BoB" /></svg>
+                                </a>
+                            </li>
+                            <li class="flex-grow-1"><a class="nav-link" href="#Blocklist">Blocklist</a></li>
+                            <li class="flex-grow-1"><a class="nav-link" href="#Blockgrid">Blockgrid</a></li>
+                            <li class="d-none d-md-block position-absolute top-50 start-50 translate-middle">
+                                <a class="nav-link" href="#">
+                                    <svg class="bi" width="24" height="24"><use xlink:href="#BoB" /></svg>
+                                </a>
+                            </li>
+                            <li class="flex-grow-1"><a class="nav-link" href="#Headliners">Headliners</a></li>
+                            <li class="flex-grow-1"><a class="nav-link" href="#Blockgrid2">Another Blockgrid</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @RenderSection("phBody", false)
+
+    <footer class="container">
+        <p class="float-end"><a href="#">Back to top</a></p>
+        @rootNode.Value("copyright") | @rootNode.Value("emailAddress")
+    </footer>
+
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("phScripts", false)
+</body>
+</html>

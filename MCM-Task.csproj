@@ -5,6 +5,22 @@
     <Nullable>enable</Nullable>
     <RootNamespace>MCM_Task</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="wwwroot\assets\css\**" />
+    <Content Remove="wwwroot\assets\css\**" />
+    <EmbeddedResource Remove="wwwroot\assets\css\**" />
+    <None Remove="wwwroot\assets\css\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="wwwroot\assets\dist\css\bootstrap.min.css" />
+    <None Include="wwwroot\assets\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\assets\dist\css\bootstrap.rtl.min.css" />
+    <None Include="wwwroot\assets\dist\css\bootstrap.rtl.min.css.map" />
+    <None Include="wwwroot\assets\dist\css\main.css" />
+    <None Include="wwwroot\assets\dist\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\assets\dist\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\assets\js\color-modes.js" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Umbraco.Cms" Version="13.2.0" />
